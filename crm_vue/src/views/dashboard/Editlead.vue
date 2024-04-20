@@ -85,6 +85,25 @@
                         </div>
                     </div>
 
+
+                    <div class="field">
+                        <label>Assigned to</label>
+                        <div class="control">
+                            <div class="select">
+                                <select v-model="lead.assigned_to">
+                                    <option value="" selected>Select Member</option>
+                                    <option
+                                        v-for="Member in team.member"
+                                        v-bind:key="Member.id"
+                                        v-bind:value="Member.id"
+                                    >
+                                        {{ Member.username }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="field">
                         <div class="control">
                             <button class="button is-success">Submit</button>
@@ -105,11 +124,15 @@
         name: 'Editlead',
         data() {
             return {
-                lead: {}
+                lead: {},
+                team:{
+                    member:[]
+                }
             }
         },
         mounted() {
             this.getLead()
+            this.getTeam()
         },
         methods: {
             async getLead() {
@@ -151,6 +174,20 @@
                         console.log(error)
                     })
 
+                this.$store.commit('setIsLoading', false)
+            },
+            async getTeam() {
+                this.$store.commit('setIsLoading', true)
+
+                await axios
+                    .get('/api/v1/teams/get_my_team/')
+                    .then(response => {
+                        this.team = response.data
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                
                 this.$store.commit('setIsLoading', false)
             }
         }
