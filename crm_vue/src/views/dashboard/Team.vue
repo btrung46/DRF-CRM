@@ -14,6 +14,7 @@
                     <thead>
                         <tr>
                             <th>Username</th>
+                            <th>Full name</th>
                         </tr>
                     </thead>
 
@@ -23,6 +24,7 @@
                             v-bind:key="Member.id"
                         >
                             <td>{{ Member.username }}</td>
+                            <td>{{ Member.first_name }}{{ Member.last_name }}</td>
                         </tr>
                     </tbody>
                 </table>

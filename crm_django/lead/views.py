@@ -3,16 +3,20 @@ from django.shortcuts import render
 
 from rest_framework import viewsets, filters
 from rest_framework.response import Response
-
+from rest_framework.pagination import PageNumberPagination
 from team.models import Team
 from .models import Lead
 from .serializers import LeadSerializer
 
+class LeadPagination(PageNumberPagination):
+    page_size = 10
 
 class LeadViewSet(viewsets.ModelViewSet):
     serializer_class = LeadSerializer
     queryset = Lead.objects.all()
-    
+    pagination_class = LeadPagination
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('company', 'contact_person')
     def get_queryset(self):
         team = Team.objects.filter(member__in = [self.request.user]).first()
         return self.queryset.filter(team = team)
