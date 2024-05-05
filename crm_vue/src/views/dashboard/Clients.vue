@@ -7,7 +7,16 @@
                 </h1>
                 <router-link 
                     to="/dashboard/Clients/add"
+                    v-if="$store.state.team.max_clients > num_clients"
                 >Add Clients</router-link>
+
+                <div
+                    class="notification is-danger"
+                    v-else
+                >
+                    You have reached the top of your limitations. Please upgrade!
+                </div>
+<hr>
                 <form @submit.prevent="getClients">
                     <div class="field has-addons">
                         <div class="control">
@@ -65,7 +74,8 @@
                 showNextButton: false,
                 showPreviousButton: false,
                 currentPage: 1,
-                query: ''
+                query: '',
+                num_clients: 0 
             }
         },
         mounted(){
@@ -84,6 +94,13 @@
                 this.$store.commit('setIsLoading', true)
                 this.showNextButton = false
                 this.showPreviousButton = false
+
+                await axios
+                    .get(`/api/v1/clients/`)
+                    .then(response => {
+                        this.num_clients = response.data.count
+                    })
+
                 await axios 
                     .get(`/api/v1/clients/?page=${this.currentPage}&search=${this.query}`)
                     .then(response => {

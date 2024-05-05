@@ -3,6 +3,18 @@
         <div class="columns is-multiline">
             <div class="column is-12">
                 <h1 class="title">{{ team.name }}</h1>
+                <hr>
+
+                <p><strong>Plan: </strong>{{ $store.state.team.plan }}</p>
+                <p><strong>Max clients: </strong>{{ $store.state.team.max_clients }}</p>
+                <p><strong>Max leads: </strong>{{ $store.state.team.max_leads }}</p>
+                <p v-if="$store.state.team.plan !== 'Free'"><strong>Plan end date: </strong>{{ team.plan_end_date }}</p>
+
+                <p>
+                    <router-link :to="{'name': 'Plans'}">Change plan</router-link>
+                </p>
+
+                <hr>
             </div>
             <template v-if="team.created_by.id === parseInt($store.state.user.id)">
                 <router-link :to="{'name': 'AddMember'}" class = "button is-primary">Add member</router-link>
