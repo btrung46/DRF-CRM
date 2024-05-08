@@ -62,4 +62,10 @@ def convert_lead_to_client(request):
     
     client = Client.objects.create(team = team, name= lead.company, contact_person = lead.contact_person, email = lead.email, phone = lead.phone, website = lead.website,created_by = request.user)
     return Response()
+
+@api_view(['POST'])
+def delete_client(request,client_id):
+    client = Client.objects.get(pk = client_id)
+    client.delete()
+    return Response({'message':'the client was deleted'})    
     

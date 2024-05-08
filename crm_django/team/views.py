@@ -30,7 +30,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         obj = serializer.save(created_by= self.request.user)
         obj.member.add(self.request.user)
-        obj.save()
+        obj.save()        
 @api_view(['GET'])
 def get_my_team(request):
     team = Team.objects.filter(member__in = [request.user]).first()
@@ -139,6 +139,25 @@ def stripe_webhook(request):
         team.stripe_subscription_id = session.get('subscription')
         team.save()
     return HttpResponse(status=200)
+
+@api_view(['POST'])
+def cancel_plan(request):
+    team = Team.objects.filter(member__in=[request.user]).first()
+    plan_free = Plan.objects.get(name='Free')
+
+    team.plan = plan_free
+    team.plan_status = Team.PLAN_CANCELLED
+    team.save()
+
+    try:
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe.Subscription.delete(team.stripe_subscription_id)
+    except Exception:
+        return Response({'error': 'Something went wrong. Please try again'})
+    
+    serializer = TeamSerializer(team)
+    return Response(serializer.data)
+
 
 @api_view(['POST'])
 def check_session(request):

@@ -7,9 +7,11 @@
         </div>
         <div class="navbar-menu">
             <div class="navbar-end">
+                <template v-if="$store.state.isAuthenticated">
                 <router-link to="/dashboard/Leads" class="navbar-item">Leads</router-link>
                 <router-link to="/dashboard/Clients" class="navbar-item">Clients</router-link>
                 <router-link to="/dashboard/team" class="navbar-item">Team</router-link>
+                </template>
                 <div class="navbar-item">
                     <div class="buttons">
                         
